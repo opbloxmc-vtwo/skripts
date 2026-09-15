@@ -1,22 +1,17 @@
 # opbloxmc-vtwo - Skripts
-
-### Included:
-
-* Staff Chat - 🟢 - Requires Vault
+## Included:
+* Staff Chat - 🟢 
 * Chat Formatting - 🟢 - Requires Vault
 * 5 Lives Skript - 🔴
 * Gamemode command - 🔴
 * MSG and Reply System - 🔴
-* Command Spy - 🔴
-* Chat Logging - 🔴
+* Command Spy - 🟢
+* Chat Logging - 🟢
 * Tags - 🟢- Requires Skript-YMAL
-* Stats CMD - 🟢
+* Stats CMD - 🟢- Requires Vault
 * Sudo CMD - 🟢 - Requires Vault
 
-
-
-#### Staff Chat Addons:
-
+## Staff Chat Addons:
 * Admin Chat - 🔴
 * Mod Chat - 🔴
 * Helper Chat - 🔴
@@ -25,28 +20,16 @@
 * Manager Chat - 🔴
 * Lead Staff Chat - 🔴
 
-
-
-#### Logging Addons:
-
-* Command Logging - 🔴
-* Join/Leave Logging - 🔴
+## Logging Addons:
+* Command Logging - 🟢
+* Join/Leave Logging - 🟢
 
 
 
-
-
-
-
-### Information:
-
+## Information:
 * 🔴 Not Done
 * ⚠️ In Progress
 * 🟢 Done
 
 
-
-
-
 © Copyright opbloxmc-vtwo 2026, MIT LINCESE.
-
