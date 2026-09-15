@@ -1,0 +1,26 @@
+options:
+    p: &8[&2&lStaff Chat&8]
+
+command /staffchat [<text>]:
+    permission: server.staff.chat
+    permission message: {@p}&c No Permission
+    trigger:
+        if arg-1 is not set:
+            if {sc::%player's uuid%} is not set:
+                set {sc::%player's uuid%} to true
+                send "{@p}&f has been &aEnabled&7."
+            else:
+                delete {sc::%player's uuid%}
+                send "{@p}&f has been &cDisabled&7."
+        else:
+            loop all players:
+                if loop-player has permission "server.staff.chat":
+                    send "{@p}&7%player% &8>> &7%arg%" to loop-player
+
+on chat:
+    if {sc::%player's uuid%} is true:
+        cancel event
+            loop all players:
+                if loop-player has permission "server.staff.chat":
+                    send "{@p}&7%player% &8>> &7%message%" to loop-player
+                    stop

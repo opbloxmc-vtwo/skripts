@@ -1,0 +1,2 @@
+on chat:
+    log "%player% >> %message%" to file "Chat.log"

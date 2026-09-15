@@ -1,0 +1,2 @@
+on command:
+    log "%player% >> /%full command%" to file "Commands.log"

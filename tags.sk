@@ -1,0 +1,179 @@
+options:
+    p: &8[&e&lTags&8]&r
+    yaml-id: tags
+    yaml-file: plugins/Skript/scripts/tags.yml
+
+on load:
+    load yaml "{@yaml-file}" as "{@yaml-id}"
+
+    # Only create the available tag list if it does not already exist.
+    if yaml value "available" from "{@yaml-id}" is not set:
+        set {_defaults::*} to "&8<&c&lMaster&8>&r", "&8<&d&lS1&8>&r", "&8<&e&lAlpha&8>&r", "&8<&5&lNoice&8>&r", "&8<&4&lGod&8>&r", "&8<&3&lStaff&8>&r", "&8<&2&lBeta&8>&r", "&8<&#FF0000>&lS2&8>&r", "&8<&eNovice&8>&r", "&8<&4&lDemon&8>&r", "&8<&b&lAngel&8>&r", "&8<&b&lIce&8>&r", "&8<&2&lGenius&8>&r", "&8<&2&l$$$ &a&lRich &2&l$$$&8>&r"
+
+        loop {_defaults::*}:
+            set yaml value "available.%loop-index%" from "{@yaml-id}" to loop-value
+
+        save yaml "{@yaml-id}"
+
+    broadcast "{@p} &aLoaded %size of yaml list ""available"" from ""{@yaml-id}""% tags."
+
+
+on unload:
+    save yaml "{@yaml-id}"
+    unload yaml "{@yaml-id}"
+
+
+function savePlayerTags(p: player):
+    set {_uuid} to uuid of {_p}
+
+    delete yaml value "players.%{_uuid}%.owned" from "{@yaml-id}"
+
+    loop {tags::%{_uuid}%::*}:
+        set yaml value "players.%{_uuid}%.owned.%loop-index%" from "{@yaml-id}" to loop-value
+
+    set yaml value "players.%{_uuid}%.active" from "{@yaml-id}" to {tag::%{_uuid}%}
+    save yaml "{@yaml-id}"
+
+
+function loadPlayerTags(p: player):
+    set {_uuid} to uuid of {_p}
+
+    delete {tags::%{_uuid}%::*}
+    set {tag::%{_uuid}%} to ""
+
+    set {_owned::*} to yaml list "players.%{_uuid}%.owned" from "{@yaml-id}"
+
+    loop {_owned::*}:
+        add loop-value to {tags::%{_uuid}%::*}
+
+    set {_active} to yaml value "players.%{_uuid}%.active" from "{@yaml-id}"
+
+    if {_active} is set:
+        set {tag::%{_uuid}%} to {_active}
+
+
+on join:
+    loadPlayerTags(player)
+
+
+command /givealltags <player>:
+    permission: tags.giveall
+    permission message: {@p} &cYou do not have permission.
+    trigger:
+        set {_available::*} to yaml list "available" from "{@yaml-id}"
+
+        loop {_available::*}:
+            if loop-value is not in {tags::%arg-1's uuid%::*}:
+                add loop-value to {tags::%arg-1's uuid%::*}
+
+        savePlayerTags(arg-1)
+
+        send "{@p} &aYou were given every available tag." to arg-1
+        send "{@p} &aGave %arg-1% all tags."
+
+
+command /givetag <player> <text>:
+    permission: tags.give
+    permission message: {@p} &cYou do not have permission.
+    trigger:
+        set {_available::*} to yaml list "available" from "{@yaml-id}"
+
+        if arg-2 is not in {_available::*}:
+            send "{@p} &cThat tag does not exist."
+            send "{@p} &7Use the exact tag text from the tag list."
+            stop
+
+        if arg-2 is in {tags::%arg-1's uuid%::*}:
+            send "{@p} &e%arg-1% already has that tag."
+            stop
+
+        add arg-2 to {tags::%arg-1's uuid%::*}
+        savePlayerTags(arg-1)
+
+        send "{@p} &aYou received the tag &r%arg-2%&a!" to arg-1
+        send "{@p} &aGave %arg-1% the tag &r%arg-2%&a."
+
+
+command /mytags:
+    aliases: /tags
+    trigger:
+        send ""
+        send "&8&m--------------------------------"
+        send "&e&lYour Tags"
+        send "&7Current tag: &r%{tag::%player's uuid%}%"
+        send ""
+
+        if size of {tags::%player's uuid%::*} is 0:
+            send "&cYou do not own any tags."
+        else:
+            loop {tags::%player's uuid%::*}:
+                send "&8%loop-index%. &r%loop-value%"
+
+        send ""
+        send "&7Use &e/tag <number> &7to equip a tag."
+        send "&7Use &e/tag none &7to remove your active tag."
+        send "&8&m--------------------------------"
+
+
+command /tag <text>:
+    trigger:
+        if arg-1 is "none":
+            set {tag::%player's uuid%} to ""
+            savePlayerTags(player)
+
+            send "{@p} &aYour active tag has been removed."
+            stop
+
+        set {_number} to arg-1 parsed as integer
+
+        if {_number} is not set:
+            send "{@p} &cUse /tags to view your tags, then use /tag <number>."
+            stop
+
+        if {_number} is less than 1:
+            send "{@p} &cThat is not a valid tag number."
+            stop
+
+        set {_selectedTag} to {tags::%player's uuid%::%{_number}%}
+
+        if {_selectedTag} is not set:
+            send "{@p} &cYou do not own a tag with that number."
+            stop
+
+        set {tag::%player's uuid%} to {_selectedTag}
+        savePlayerTags(player)
+
+        send "{@p} &aYou equipped &r%{_selectedTag}%&a."
+
+
+command /resettags <player>:
+    permission: tags.reset
+    permission message: {@p} &cYou do not have permission.
+    trigger:
+        delete {tags::%arg-1's uuid%::*}
+        set {tag::%arg-1's uuid%} to ""
+
+        delete yaml value "players.%arg-1's uuid%" from "{@yaml-id}"
+        save yaml "{@yaml-id}"
+
+        send "{@p} &cYour tags have been reset." to arg-1
+        send "{@p} &aDeleted all tags from %arg-1%."
+
+
+command /removetag <player> <text>:
+    permission: tags.remove
+    permission message: {@p} &cYou do not have permission.
+    trigger:
+        if arg-2 is not in {tags::%arg-1's uuid%::*}:
+            send "{@p} &c%arg-1% does not own that tag."
+            stop
+
+        remove arg-2 from {tags::%arg-1's uuid%::*}
+
+        if {tag::%arg-1's uuid%} is arg-2:
+            set {tag::%arg-1's uuid%} to ""
+
+        savePlayerTags(arg-1)
+
+        send "{@p} &cA tag was removed from your collection." to arg-1
+        send "{@p} &aRemoved the tag from %arg-1%."

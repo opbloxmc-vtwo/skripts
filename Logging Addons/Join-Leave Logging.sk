@@ -1,0 +1,5 @@
+on join:
+    log "[+] %player%" to file "JL.log"
+
+on quit:
+    log "[-] %player%" to file "JL.log"

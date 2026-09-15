@@ -1,0 +1,3 @@
+on chat:
+    set chat format to ""
+    broadcast "%{tag::%player's uuid%}% &r%player's prefix%%player%&8: &f%message%"

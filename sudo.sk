@@ -1,0 +1,14 @@
+options:
+    P: &8[&e&lSudo&8]&e
+
+on load:
+    broadcast "{@P} has loaded!"
+
+command /sudo <player> <text>:
+    permission: sudo.cmd
+    trigger:
+        if arg-2 contains "/":
+            make arg-1 execute command "%arg-2%"
+        else:
+            broadcast "%{tag::%player's uuid%}% %arg-1's prefix%%arg-1% &8>> &f%arg-2%"
+            

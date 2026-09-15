@@ -1,0 +1,4 @@
+on command:
+    loop all players:
+        if loop-player has permission "server.staff.commandspy":
+            send "&8[&c&lCommand Spy&8] &7%player% &8>> &7/%full command%" to loop-player

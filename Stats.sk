@@ -1,0 +1,99 @@
+# Stats Skript
+
+options:
+    p: &8[<gradient:#FF0000>:#FFFF00><b>Stats</b></gradient>&8]&r
+    p2: <gradient:#FF0000>:#FFFF00><b>Stats</b></gradient>&r
+
+on load:
+    broadcast "&8&m----------------------------------------"
+    broadcast "{@p} &7has been loaded!"
+    broadcast "&7Stats currently tracking:"
+    broadcast "&c• Health"
+    broadcast "&d• Rank"
+    broadcast "&d• Playtime"
+    broadcast "&c• Blocks broken"
+    broadcast "&a• Blocks placed"
+    broadcast "&c• Items dropped"
+    broadcast "&a• Items picked up"
+    broadcast "&e• Last Seen"
+    broadcast "&e• First Joined"
+    broadcast "&4• Damage Given"
+    broadcast "&4• Damage Taken"
+    broadcast "&4• Kills"
+    broadcast "&4• Deaths"
+    broadcast "&8&m----------------------------------------"
+
+command /stats [<offline player>]:
+    trigger:
+        if arg-1 is not set:
+            send "%player%'s {@p2}&7:"
+            send "» &cHealth&7: &c%health%❤️"
+            send "» &dRank&7: %player's prefix%"
+            send "» &dPlaytime&7: %{playtime::%player's uuid%}% Seconds"
+            send "» &cBlocks broken&7: %{blocksb::%player's uuid%}%"
+            send "» &aBlocks placed&7: %{blocksp::%player's uuid%}%"
+            send "» &cItems dropped&7: %{itemd::%player's uuid%}%"
+            send "» &aItems picked up&7: %{itempu::%player's uuid%}%"
+            send "» &eLast Seen&7: %{lastseen::%player's uuid%}%"
+            send "» &eJoined&7: %{joined::%player's uuid%}%"
+            send "» &4Damage Given&7: %{dmgg::%player's uuid%}%"
+            send "» &4Damage Taken&7: %{dmgt::%player's uuid%}%"
+            send "» &4Kills&7: %{kills::%player's uuid%}%"
+            send "» &4Deaths&7: %{deaths::%player's uuid%}%"
+
+        else:
+            send "%arg-1%'s {@p2}&7:"
+            send "» &cHealth&7: &c%health of arg-1%❤️"
+            send "» &dRank&7: %arg-1's prefix%"
+            send "» &dPlaytime&7: %{playtime::%arg-1's uuid%}% Seconds"
+            send "» &cBlocks broken&7: %{blocksb::%arg-1's uuid%}%"
+            send "» &aBlocks placed&7: %{blocksp::%arg-1's uuid%}%"
+            send "» &cItems dropped&7: %{itemd::%arg-1's uuid%}%"
+            send "» &aItems picked up&7: %{itempu::%arg-1's uuid%}%"
+            send "» &eLast Seen&7: %{lastseen::%arg-1's uuid%}%"
+            send "» &eJoined&7: %{joined::%arg-1's uuid%}%"
+            send "» &4Damage Given&7: %{dmgg::%arg-1's uuid%}%"
+            send "» &4Damage Taken&7: %{dmgt::%arg-1's uuid%}%"
+            send "» &4Kills&7: %{kills::%arg-1's uuid%}%"
+            send "» &4Deaths&7: %{deaths::%arg-1's uuid%}%"
+
+# Damage
+on damage:
+    add damage to {dmgg::%attacker's uuid%}
+    add damage to {dmgt::%victim's uuid%}
+
+# Kills and deaths
+on death of player:
+    add 1 to {deaths::%victim's uuid%}
+
+    if attacker is a player:
+        add 1 to {kills::%attacker's uuid%}
+
+# First time joining
+on first join:
+    set {joined::%player's uuid%} to now
+
+# Last seen
+on quit:
+    set {lastseen::%player's uuid%} to now
+
+# Playtime
+every 1 second:
+    loop all players:
+        add 1 to {playtime::%loop-player's uuid%}
+
+# Items picked up
+on pickup:
+    add amount of event-item to {itempu::%player's uuid%}
+
+# Items dropped
+on drop:
+    add amount of event-item to {itemd::%player's uuid%}
+
+# Blocks broken
+on break:
+    add 1 to {blocksb::%player's uuid%}
+
+# Blocks placed
+on place:
+    add 1 to {blocksp::%player's uuid%}

@@ -2,13 +2,16 @@
 
 ### Included:
 
-* Staff Chat - 🔴
-* Chat Formatting - 🔴
+* Staff Chat - 🟢 - Requires Vault
+* Chat Formatting - 🟢 - Requires Vault
 * 5 Lives Skript - 🔴
 * Gamemode command - 🔴
 * MSG and Reply System - 🔴
 * Command Spy - 🔴
 * Chat Logging - 🔴
+* Tags - 🟢- Requires Skript-YMAL
+* Stats CMD - 🟢
+* Sudo CMD - 🟢 - Requires Vault
 
 
 
@@ -45,5 +48,5 @@
 
 
 
-© Copyright opbloxmc-vtwo 2026, All Rights Reserved.
+© Copyright opbloxmc-vtwo 2026, MIT LINCESE.
 
